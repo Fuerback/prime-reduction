@@ -9,8 +9,15 @@ import (
 	"strconv"
 )
 
+var count int
+
 func main() {
-	file, err := os.Open("./sample.in")
+	if len(os.Args) < 1 {
+		panic("not found file to read")
+	}
+	datafilePath := os.Args[1]
+
+	file, err := os.Open(datafilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,12 +25,11 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		number, _ := convertToInt(scanner.Text())
-		itIsPrimenNumber(number)
-		result := primeFactorization(int(number))
-		for k, _ := range result {
-			fmt.Println(k)
-			// somar os numeros do mapa e conferir se o total é primo, caso nao seja, passar pelo refactor e repetir o processo.. caso seja primo, printar o numero e o numero de vezes que passou pelo refactor
+		number, err := convertToInt64(scanner.Text())
+		if err != nil {
+			fmt.Println(err.Error())
+		} else {
+			calculateReducedNumber(number)
 		}
 	}
 
@@ -32,7 +38,36 @@ func main() {
 	}
 }
 
-func convertToInt(text string) (int64, error) {
+func calculateReducedNumber(number int64) {
+	count = 1
+	showResult := true
+
+	for !isPrimenNumber(number) {
+		sum := getSumPrimeFactorNumbers(number)
+		if number == sum {
+			showResult = false
+			break
+		}
+		number = sum
+	}
+
+	if showResult {
+		fmt.Println(number, count)
+	}
+}
+
+func getSumPrimeFactorNumbers(number int64) int64 {
+	result := primeFactorization(int(number))
+
+	var sum int64
+	for n, q := range result {
+		sum += int64(n * q)
+	}
+
+	return sum
+}
+
+func convertToInt64(text string) (int64, error) {
 	n, err := strconv.ParseInt(text, 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("%d is not an int64", n)
@@ -40,16 +75,12 @@ func convertToInt(text string) (int64, error) {
 	return n, nil
 }
 
-func itIsPrimenNumber(number int64) bool {
-	if big.NewInt(number).ProbablyPrime(0) {
-		fmt.Println(number, "is prime")
-	} else {
-		fmt.Println(number, "is not prime")
-	}
-	return false
+func isPrimenNumber(number int64) bool {
+	return big.NewInt(number).ProbablyPrime(0)
 }
 
 func primeFactorization(n int) (pfs map[int]int) {
+	count++
 	pfs = make(map[int]int)
 
 	// Get the number of 2s that divide n
