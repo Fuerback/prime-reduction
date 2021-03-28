@@ -6,7 +6,7 @@ A prime number p≥2 is an integer which is evenly divisible by only two integer
 231 = 3 × 7 × 11
 ```
 
-The program reads a file entry, verifying that the line is a number and for each number are summed reduced prime numbers until the sum is not a prime number.
+The program reads the line, verify if the input is a number and for each number will be printed the reduced number and the number of times the first line of the process executed
 
 1. if `x` is prime, print x and stop
 2. factor `x` into its prime factors `p1,p2,…,pk`
@@ -18,10 +18,12 @@ The program reads a file entry, verifying that the line is a number and for each
 # Usage
 
 ```sh
-go run .\main.go .\sample.in
+go run .\main.go
 ```
 
-# Output example
+When the program run type a integer number.
+
+# Example input/output
 
 ## Input
 

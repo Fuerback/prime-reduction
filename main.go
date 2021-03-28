@@ -12,29 +12,19 @@ import (
 var count int
 
 func main() {
-	if len(os.Args) < 1 {
-		panic("not found file to read")
-	}
-	datafilePath := os.Args[1]
-
-	file, err := os.Open(datafilePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		number, err := convertToInt64(scanner.Text())
-		if err != nil {
-			fmt.Println(err.Error())
-		} else {
+		if number == 4 {
+			break
+		}
+		if err == nil {
 			calculateReducedNumber(number)
 		}
-	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
